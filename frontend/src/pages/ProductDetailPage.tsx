@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import api from '../api/axios';
 import { Product, ApiResponse, PaginatedResponse } from '../types';
+import { MOCK_PRODUCTS } from '../data/mockData';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocale } from '../contexts/LocaleContext';
@@ -56,9 +57,13 @@ export const ProductDetailPage: React.FC = () => {
               setRelatedProducts(relRes.data.data.filter((p) => p.id !== currentProduct.id));
             }
           }
+        } else {
+          throw new Error('Fallback');
         }
       } catch {
-        setProduct(null);
+        const found = MOCK_PRODUCTS.find(p => p.slug === slug) || MOCK_PRODUCTS[0];
+        setProduct(found);
+        setRelatedProducts(MOCK_PRODUCTS.filter(p => p.id !== found.id).slice(0, 4));
       } finally {
         setIsLoading(false);
       }

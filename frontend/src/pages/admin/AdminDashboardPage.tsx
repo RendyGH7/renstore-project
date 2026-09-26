@@ -51,12 +51,119 @@ export const AdminDashboardPage: React.FC = () => {
       if (res.data?.data) {
         setStats(res.data.data);
       } else {
-        if (!isSilent) setError('Gagal memuat data statistik.');
+        throw new Error('Fallback to mock');
       }
-    } catch (err: any) {
-      if (!isSilent) {
-        setError(err.response?.data?.message || 'Gagal memuat data statistik dari server.');
-      }
+    } catch {
+      // Portfolio Showcase Fallback
+      setStats({
+        metrics: {
+          total_revenue: 148750000,
+          total_orders: 48,
+          pending_orders: 4,
+          processing_orders: 8,
+          completed_orders: 34,
+          cancelled_orders: 2,
+          total_products: 24,
+          active_products: 24,
+          low_stock_products_count: 1,
+          total_customers: 128,
+          today_revenue: 12500000,
+          today_orders: 4,
+          today_new_customers: 3,
+        },
+        hourly_sales: [
+          { period: '00:00 - 04:00', total_sales: 0, orders_count: 0, completed_count: 0 },
+          { period: '04:00 - 08:00', total_sales: 1500000, orders_count: 1, completed_count: 1 },
+          { period: '08:00 - 12:00', total_sales: 3200000, orders_count: 1, completed_count: 1 },
+          { period: '12:00 - 16:00', total_sales: 4800000, orders_count: 2, completed_count: 2 },
+          { period: '16:00 - 20:00', total_sales: 3000000, orders_count: 1, completed_count: 1 },
+          { period: '20:00 - 24:00', total_sales: 0, orders_count: 0, completed_count: 0 },
+        ],
+        daily_sales: [
+          { period: 'Senin', total_sales: 12000000, orders_count: 4, completed_count: 4 },
+          { period: 'Selasa', total_sales: 15000000, orders_count: 5, completed_count: 4 },
+          { period: 'Rabu', total_sales: 9500000, orders_count: 3, completed_count: 3 },
+          { period: 'Kamis', total_sales: 18000000, orders_count: 6, completed_count: 5 },
+          { period: 'Jumat', total_sales: 22000000, orders_count: 7, completed_count: 6 },
+          { period: 'Sabtu', total_sales: 14000000, orders_count: 5, completed_count: 4 },
+          { period: 'Minggu', total_sales: 8000000, orders_count: 2, completed_count: 2 },
+        ],
+        monthly_sales: [
+          { period: 'Apr', total_sales: 45000000, orders_count: 15, completed_count: 14 },
+          { period: 'Mei', total_sales: 52000000, orders_count: 18, completed_count: 16 },
+          { period: 'Jun', total_sales: 48000000, orders_count: 16, completed_count: 15 },
+          { period: 'Jul', total_sales: 68000000, orders_count: 22, completed_count: 20 },
+          { period: 'Agu', total_sales: 62000000, orders_count: 20, completed_count: 19 },
+          { period: 'Sep', total_sales: 70000000, orders_count: 21, completed_count: 20 },
+        ],
+        yearly_sales: [
+          { period: '2024', total_sales: 180000000, orders_count: 60, completed_count: 55 },
+          { period: '2025', total_sales: 240000000, orders_count: 78, completed_count: 72 },
+          { period: '2026', total_sales: 260000000, orders_count: 82, completed_count: 78 },
+        ],
+        top_selling_products: [
+          { product_id: 1, product_name: 'Apple iPhone 16 Pro Max 256GB', total_sold: 14, total_revenue: 349986000 },
+          { product_id: 3, product_name: 'MacBook Pro 14 M4 Pro Space Black', total_sold: 8, total_revenue: 255992000 },
+          { product_id: 5, product_name: 'Sony WH-1000XM5 Wireless Headphones', total_sold: 22, total_revenue: 109978000 },
+        ],
+        low_stock_products: [
+          {
+            id: 3,
+            category_id: 2,
+            name: 'MacBook Pro 14 M4 Pro Space Black',
+            slug: 'macbook-pro-14-m4-pro-space-black',
+            description: 'Laptop performa tinggi.',
+            price: 31999000,
+            stock: 3,
+            image_url: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=800&auto=format&fit=crop',
+            is_active: true,
+          },
+        ],
+        recent_orders: [
+          {
+            id: 1,
+            order_number: 'ORD-20260926-001',
+            user_id: 2,
+            total_amount: 24999000,
+            status: 'completed',
+            payment_method: 'qris',
+            payment_status: 'paid',
+            phone: '089876543210',
+            shipping_address: 'Jl. Thamrin No. 25, Jakarta Pusat',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user: {
+              id: 2,
+              name: 'Customer Renstore',
+              email: 'customer@renstore.com',
+              role: 'customer',
+              created_at: new Date().toISOString(),
+            },
+            order_items: [],
+          },
+          {
+            id: 2,
+            order_number: 'ORD-20260926-002',
+            user_id: 2,
+            total_amount: 4999000,
+            status: 'processing',
+            payment_method: 'bca',
+            payment_status: 'paid',
+            phone: '089876543210',
+            shipping_address: 'Jl. Thamrin No. 25, Jakarta Pusat',
+            created_at: new Date(Date.now() - 3600000).toISOString(),
+            updated_at: new Date(Date.now() - 3600000).toISOString(),
+            user: {
+              id: 2,
+              name: 'Customer Renstore',
+              email: 'customer@renstore.com',
+              role: 'customer',
+              created_at: new Date().toISOString(),
+            },
+            order_items: [],
+          },
+        ],
+      });
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);

@@ -210,14 +210,9 @@ export const Navbar: React.FC = () => {
               <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl sm:rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/25 group-hover:scale-105 group-hover:shadow-blue-500/35 transition-all">
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <div>
-                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 block leading-none">
-                  RENSTORE
-                </span>
-                <span className="text-[9px] sm:text-[10px] font-extrabold text-blue-600 tracking-wider uppercase">
-                  Tech &amp; Lifestyle
-                </span>
-              </div>
+              <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
+                RENSTORE
+              </span>
             </Link>
 
             {/* Desktop Nav Links (Fluid Horizontal Sliding Capsule) */}

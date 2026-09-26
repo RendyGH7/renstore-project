@@ -28,6 +28,7 @@ import {
 import api from '../api/axios';
 import { Product, Category, PaginatedResponse, ApiResponse } from '../types';
 import { BLOG_POSTS } from '../data/blogData';
+import { MOCK_PRODUCTS, MOCK_CATEGORIES } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
 import SkeletonLoader from '../components/SkeletonLoader';
 import AnimatedPage from '../components/AnimatedPage';
@@ -211,19 +212,25 @@ export const HomePage: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [prodRes, catRes] = await Promise.all([
+        const [prodRes, catRes] = await Promise.allSettled([
           api.get<PaginatedResponse<Product>>('/products', { params: { per_page: 8, sort: 'latest' } }),
           api.get<ApiResponse<Category[]>>('/categories')
         ]);
 
-        if (prodRes.data?.data) {
-          setFeaturedProducts(prodRes.data.data);
+        if (prodRes.status === 'fulfilled' && prodRes.value.data?.data && prodRes.value.data.data.length > 0) {
+          setFeaturedProducts(prodRes.value.data.data);
+        } else {
+          setFeaturedProducts(MOCK_PRODUCTS);
         }
-        if (catRes.data?.data) {
-          setCategories(catRes.data.data);
+
+        if (catRes.status === 'fulfilled' && catRes.value.data?.data && catRes.value.data.data.length > 0) {
+          setCategories(catRes.value.data.data);
+        } else {
+          setCategories(MOCK_CATEGORIES);
         }
       } catch {
-        // Ignored
+        setFeaturedProducts(MOCK_PRODUCTS);
+        setCategories(MOCK_CATEGORIES);
       } finally {
         setIsLoading(false);
       }

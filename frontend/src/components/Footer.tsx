@@ -3,10 +3,7 @@ import { createPortal } from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ShoppingBag, 
-  ShieldCheck, 
-  Truck, 
   CheckCircle2, 
-  Lock, 
   Sparkles, 
   ArrowRight, 
   Mail, 
@@ -95,45 +92,6 @@ export const Footer: React.FC = () => {
     setTimeout(() => setCopiedCode(false), 2500);
   };
 
-  const featureCards = [
-    {
-      id: 'shipping',
-      icon: Truck,
-      iconColor: 'text-blue-600',
-      lightBg: 'bg-blue-50',
-      badge: language === 'en' ? 'Express Delivery' : 'Pengiriman Cepat',
-      badgeColor: 'bg-blue-50 text-blue-700 border-blue-200/80',
-      title: t('feature_shipping_title'),
-      desc: language === 'en' 
-        ? 'Fully insured priority transit with live tracking across Indonesia.'
-        : 'Asuransi pengiriman penuh & pelacakan live ke seluruh wilayah Indonesia.',
-    },
-    {
-      id: 'warranty',
-      icon: ShieldCheck,
-      iconColor: 'text-emerald-600',
-      lightBg: 'bg-emerald-50',
-      badge: language === 'en' ? '2-Year Warranty' : 'Garansi Resmi 2 Thn',
-      badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
-      title: t('feature_warranty_title'),
-      desc: language === 'en'
-        ? '100% genuine factory sealed products with official brand warranty.'
-        : '100% produk segel original resmi dengan jaminan klaim garansi mudah.',
-    },
-    {
-      id: 'payment',
-      icon: Lock,
-      iconColor: 'text-violet-600',
-      lightBg: 'bg-violet-50',
-      badge: language === 'en' ? '256-Bit SSL Encrypted' : 'Enkripsi Bank-Grade',
-      badgeColor: 'bg-violet-50 text-violet-700 border-violet-200/80',
-      title: t('footer_secure_payment'),
-      desc: language === 'en'
-        ? 'Encrypted checkout powered by Xendit Dynamic QRIS & Bank Gateway.'
-        : 'Sistem checkout terproteksi didukung gateway resmi Xendit & QRIS.',
-    },
-  ];
-
   return (
     <motion.footer
       className="relative z-10 border-t border-slate-200 bg-white text-slate-600"
@@ -142,66 +100,18 @@ export const Footer: React.FC = () => {
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.5 }}
     >
-      {/* Elevated Interactive Value Proposition Highlights Section */}
-      <div className="border-b border-slate-100 py-8 sm:py-10 bg-slate-50/40 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {featureCards.map((card) => {
-              const IconComp = card.icon;
-              return (
-                <div
-                  key={card.id}
-                  className="group relative p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-slate-300/90 shadow-2xs hover:shadow-md transition-all duration-200 ease-out transform-gpu hover:-translate-y-1 flex flex-col justify-between cursor-default"
-                >
-                  {/* Top Header with Icon & Pill Badge */}
-                  <div className="flex items-center justify-between mb-3.5">
-                    <div className={`w-10 h-10 rounded-xl ${card.lightBg} flex items-center justify-center ${card.iconColor} group-hover:scale-105 transition-transform duration-200 ease-out`}>
-                      <IconComp className="w-5 h-5" />
-                    </div>
-
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${card.badgeColor}`}>
-                      {card.badge}
-                    </span>
-                  </div>
-
-                  {/* Body Text */}
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors duration-150">
-                      {card.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      {card.desc}
-                    </p>
-                  </div>
-
-                  {/* Bottom Guarantee Line */}
-                  <div className="mt-4 pt-3 border-t border-slate-100/90 flex items-center justify-between text-[11px] font-medium text-slate-400 group-hover:text-slate-600 transition-colors duration-150">
-                    <span className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                      {language === 'en' ? 'Verified Guarantee' : 'Jaminan Resmi Terverifikasi'}
-                    </span>
-                    <Sparkles className="w-3.5 h-3.5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Links & Newsletter */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Col 1: Brand & Tagline & Newsletter */}
         <div className="md:col-span-4 space-y-4">
-          <div className="flex items-center gap-2.5">
-            <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
+          <Link to="/" className="flex items-center gap-2.5 group inline-flex">
+            <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
               <ShoppingBag className="w-5 h-5" />
             </div>
-            <div>
-              <span className="text-lg font-black text-slate-900 tracking-tight block leading-none">RENSTORE</span>
-              <span className="text-[10px] font-bold text-blue-600 tracking-wider uppercase">Tech &amp; Lifestyle Hub</span>
-            </div>
-          </div>
+            <span className="text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+              RENSTORE
+            </span>
+          </Link>
           <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
             {t('footer_tagline')}
           </p>
@@ -244,47 +154,93 @@ export const Footer: React.FC = () => {
           <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">{t('catalog')}</h4>
           <ul className="space-y-2 text-xs">
             <li><Link to="/products" className="hover:text-blue-600 transition-colors">{t('all_products')}</Link></li>
-            <li><Link to="/products?category_slug=laptop-pc" className="hover:text-blue-600 transition-colors">Laptop &amp; PC</Link></li>
-            <li><Link to="/products?category_slug=mobile-tablets" className="hover:text-blue-600 transition-colors">Mobile &amp; Tablets</Link></li>
-            <li><Link to="/products?category_slug=games-videos" className="hover:text-blue-600 transition-colors">Gaming &amp; Console</Link></li>
-            <li><Link to="/products?category_slug=watches" className="hover:text-blue-600 transition-colors">Smartwatches</Link></li>
+            <li><Link to="/products?category_slug=laptops-computers" className="hover:text-blue-600 transition-colors">Laptop &amp; PC</Link></li>
+            <li><Link to="/products?category_slug=electronics-gadgets" className="hover:text-blue-600 transition-colors">Gadgets &amp; Phones</Link></li>
+            <li><Link to="/products?category_slug=gaming-consoles" className="hover:text-blue-600 transition-colors">Gaming &amp; Console</Link></li>
+            <li><Link to="/products?category_slug=smartwatches-wearables" className="hover:text-blue-600 transition-colors">Smartwatches</Link></li>
           </ul>
         </div>
 
         {/* Col 3: Customer Service */}
-        <div className="md:col-span-3 space-y-3">
+        <div className="md:col-span-2 space-y-3">
           <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">{t('footer_customer_service')}</h4>
           <ul className="space-y-2 text-xs">
             <li><Link to="/cart" className="hover:text-blue-600 transition-colors">{t('shopping_cart')}</Link></li>
             <li><Link to="/orders" className="hover:text-blue-600 transition-colors">{t('track_orders')}</Link></li>
+            <li><Link to="/blogs" className="hover:text-blue-600 transition-colors">{t('blogs')}</Link></li>
             <li><Link to="/login" className="hover:text-blue-600 transition-colors">{t('login')}</Link></li>
             <li><Link to="/register" className="hover:text-blue-600 transition-colors">{t('register')}</Link></li>
           </ul>
         </div>
 
-        {/* Col 4: Official Payment & Security */}
-        <div className="md:col-span-3 space-y-3">
-          <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
-            {language === 'en' ? 'Payment & Security' : 'Keamanan & Pembayaran'}
-          </h4>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            {language === 'en' 
-              ? 'Multi-channel dynamic payment gateway with instant QRIS verification.'
-              : 'Pembayaran instan terverifikasi melalui gateway resmi nasional.'}
-          </p>
-          <div className="flex flex-wrap gap-2 pt-1">
-            <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
-              QRIS
+        {/* Col 4: Experience on Mobile (Get the App) & Payment */}
+        <div className="md:col-span-4 space-y-4">
+          <div>
+            <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-1.5">
+              {language === 'en' ? 'Get the App' : 'Unduh Aplikasi Renstore'}
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed mb-3">
+              {language === 'en' 
+                ? 'Experience ultra-fast checkout and real-time shipment tracking on iOS & Android.'
+                : 'Nikmati kemudahan belanja instan dan pelacakan pesanan live di iOS & Android.'}
+            </p>
+
+            {/* App Store & Google Play Professional Badges */}
+            <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2.5">
+              {/* Apple App Store */}
+              <a
+                href="#app-store"
+                onClick={(e) => e.preventDefault()}
+                className="group flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-900 text-white transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer border border-slate-800 flex-1"
+              >
+                <svg className="w-5 h-5 fill-current shrink-0 text-white group-hover:scale-105 transition-transform" viewBox="0 0 24 24">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.84.94-2.91-.91.04-2.02.61-2.67 1.38-.58.67-1.09 1.76-.95 2.8.01 0 .02 0 .03 0 1.02 0 2.02-.5 2.65-1.27z"/>
+                </svg>
+                <div className="text-left leading-none">
+                  <span className="text-[8px] sm:text-[9px] text-slate-400 block font-medium uppercase tracking-wider mb-0.5">Download on the</span>
+                  <span className="text-xs font-bold text-white tracking-tight">App Store</span>
+                </div>
+              </a>
+
+              {/* Google Play Store */}
+              <a
+                href="#google-play"
+                onClick={(e) => e.preventDefault()}
+                className="group flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-900 text-white transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer border border-slate-800 flex-1"
+              >
+                <svg className="w-5 h-5 shrink-0 group-hover:scale-105 transition-transform" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M3.609 1.814L13.792 12 3.61 22.186c-.368-.344-.61-.83-.61-1.386V3.2c0-.556.242-1.042.609-1.386z"/>
+                  <path fill="#34A853" d="M14.847 13.055l-2.056-2.056 2.056-2.055 2.42 2.42-2.42 1.691z"/>
+                  <path fill="#FBBC05" d="M3.609 22.186l10.183-10.186 2.42 2.42-11.8 6.743c-.265-.152-.524-.49-.803-.977z"/>
+                  <path fill="#EA4335" d="M3.609 1.814c.279-.487.538-.825.803-.977l11.8 6.743-2.42 2.42L3.609 1.814z"/>
+                </svg>
+                <div className="text-left leading-none">
+                  <span className="text-[8px] sm:text-[9px] text-slate-400 block font-medium uppercase tracking-wider mb-0.5">GET IT ON</span>
+                  <span className="text-xs font-bold text-white tracking-tight">Google Play</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          {/* Secure Payment Badges */}
+          <div className="pt-2 border-t border-slate-100">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+              {language === 'en' ? 'Supported Payment & Gateways' : 'Metode Pembayaran Resmi'}
             </span>
-            <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
-              Xendit
-            </span>
-            <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
-              GoPay / OVO
-            </span>
-            <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
-              Bank Transfer
-            </span>
+            <div className="flex flex-wrap gap-1.5">
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                QRIS
+              </span>
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                Xendit
+              </span>
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                BCA / Mandiri
+              </span>
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                GoPay / OVO
+              </span>
+            </div>
           </div>
         </div>
       </div>

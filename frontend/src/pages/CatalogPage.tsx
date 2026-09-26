@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import api from '../api/axios';
 import { Product, Category, PaginatedResponse, ApiResponse, PaginationMeta } from '../types';
+import { MOCK_PRODUCTS, MOCK_CATEGORIES } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
 import SkeletonLoader from '../components/SkeletonLoader';
 import AnimatedPage from '../components/AnimatedPage';
@@ -48,11 +49,13 @@ export const CatalogPage: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const res = await api.get<ApiResponse<Category[]>>('/categories');
-        if (res.data?.data) {
+        if (res.data?.data && res.data.data.length > 0) {
           setCategories(res.data.data);
+        } else {
+          setCategories(MOCK_CATEGORIES);
         }
       } catch {
-        // Ignored
+        setCategories(MOCK_CATEGORIES);
       }
     };
     fetchCategories();
@@ -76,12 +79,31 @@ export const CatalogPage: React.FC = () => {
       }
 
       const res = await api.get<PaginatedResponse<Product>>('/products', { params });
-      if (res.data?.data) {
+      if (res.data?.data && res.data.data.length > 0) {
         setProducts(res.data.data);
+        setPaginationMeta(res.data.meta || null);
+      } else if (!res.data?.data) {
+        throw new Error('Fallback to mock');
+      } else {
+        setProducts([]);
         setPaginationMeta(res.data.meta || null);
       }
     } catch {
-      // Ignored
+      let filtered = [...MOCK_PRODUCTS];
+      if (selectedCategory) {
+        filtered = filtered.filter(p => p.category?.slug === selectedCategory);
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+      }
+      if (sortBy === 'price_asc') {
+        filtered.sort((a, b) => Number(a.price) - Number(b.price));
+      } else if (sortBy === 'price_desc') {
+        filtered.sort((a, b) => Number(b.price) - Number(a.price));
+      }
+      setProducts(filtered);
+      setPaginationMeta(null);
     } finally {
       setIsLoading(false);
     }
