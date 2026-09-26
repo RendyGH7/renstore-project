@@ -292,13 +292,47 @@ export const ProductDetailPage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedProducts.slice(0, 3).map((rel, idx) => (
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
+            {relatedProducts.slice(0, 4).map((rel, idx) => (
               <ProductCard key={rel.id} product={rel} index={idx} />
             ))}
           </div>
         </div>
       )}
+
+      {/* Mobile Sticky Quick Action Bar */}
+      <div className="lg:hidden fixed bottom-[52px] inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 px-4 py-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 safe-bottom">
+        <div className="min-w-0">
+          <span className="text-[9px] text-slate-400 block uppercase font-bold tracking-wider">{t('price')}</span>
+          <span className="text-sm font-black text-blue-600 truncate block">
+            {formatPrice(product.price)}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={handleAddToCart}
+            disabled={outOfStock || isAdding}
+            className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 active:bg-slate-100 disabled:opacity-40 cursor-pointer"
+            title={t('add_to_cart')}
+          >
+            {isAdded ? (
+              <Check className="w-4 h-4 text-emerald-600" />
+            ) : (
+              <ShoppingCart className="w-4 h-4" />
+            )}
+          </button>
+
+          <button
+            onClick={handleBuyNow}
+            disabled={outOfStock}
+            className="py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md shadow-blue-600/25 disabled:opacity-40 cursor-pointer"
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+            <span>{t('buy_now')}</span>
+          </button>
+        </div>
+      </div>
     </div>
     </AnimatedPage>
   );

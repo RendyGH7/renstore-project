@@ -108,54 +108,54 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
       </Link>
 
       {/* Product Details */}
-      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4 bg-white z-10">
-        <div className="space-y-1.5">
+      <div className="p-3.5 sm:p-5 lg:p-6 flex-1 flex flex-col justify-between space-y-3 sm:space-y-4 bg-white z-10">
+        <div className="space-y-1">
           <Link to={`/products/${product.slug}`}>
-            <h3 className="text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors duration-150 line-clamp-2 leading-snug tracking-tight">
+            <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors duration-150 line-clamp-2 leading-snug tracking-tight">
               {product.name}
             </h3>
           </Link>
-          <p className="text-xs font-medium text-slate-500 line-clamp-2 leading-relaxed">
+          <p className="hidden sm:block text-xs font-medium text-slate-500 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
         </div>
 
-        <div className="pt-3 border-t border-slate-100 space-y-3">
+        <div className="pt-2 sm:pt-3 border-t border-slate-100 space-y-2.5 sm:space-y-3">
           {/* Price and Stock status */}
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-1.5">
             <div>
-              <span className="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">{t('price')}</span>
-              <span className="text-sm sm:text-base font-black text-blue-600 tracking-tight">
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block uppercase font-bold tracking-wider">{t('price')}</span>
+              <span className="text-xs sm:text-base font-black text-blue-600 tracking-tight">
                 {formatPrice(product.price)}
               </span>
             </div>
             {product.stock > 0 && (
-              <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 shadow-2xs">
-                {language === 'en' ? `Stock: ${product.stock}` : `Stok: ${product.stock}`}
+              <span className="text-[9px] sm:text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shadow-2xs">
+                {language === 'en' ? `Stk: ${product.stock}` : `Stok: ${product.stock}`}
               </span>
             )}
           </div>
 
           {/* Action Buttons: Pill Buy Now & Circular Add to Cart */}
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 pt-0.5">
             <button
               onClick={handleBuyNow}
               disabled={outOfStock}
-              className={`flex-1 py-2.5 px-4 rounded-full text-xs font-black flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer ${
+              className={`flex-1 py-2 px-2.5 sm:py-2.5 sm:px-4 rounded-xl sm:rounded-full text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 transition-all duration-150 cursor-pointer ${
                 outOfStock
                   ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 active:scale-[0.98] text-white shadow-md shadow-blue-600/25 hover:shadow-lg hover:shadow-blue-600/35'
               }`}
               title={t('buy_now')}
             >
-              <Zap className="w-4 h-4 text-amber-300 fill-amber-300 shrink-0" />
-              <span className="truncate font-extrabold">{language === 'en' ? 'Buy Now' : 'Beli Langsung'}</span>
+              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300 fill-amber-300 shrink-0" />
+              <span className="truncate font-extrabold">{language === 'en' ? 'Buy' : 'Beli'}</span>
             </button>
 
             <button
               onClick={handleAddToCart}
               disabled={outOfStock || isAdding}
-              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-150 border cursor-pointer ${
+              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-full flex items-center justify-center shrink-0 transition-all duration-150 border cursor-pointer ${
                 isAdded
                   ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20'
                   : outOfStock
@@ -165,11 +165,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
               title={t('add_to_cart')}
             >
               {isAdded ? (
-                <Check className="w-4 h-4 text-white" />
+                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               ) : isAdding ? (
-                <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
+                <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
               ) : (
-                <ShoppingCart className="w-4 h-4 text-slate-700" />
+                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700" />
               )}
             </button>
           </div>

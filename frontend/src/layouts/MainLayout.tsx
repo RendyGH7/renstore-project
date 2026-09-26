@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import MobileBottomNav from '../components/MobileBottomNav';
 
 export const MainLayout: React.FC = () => {
   const location = useLocation();
@@ -42,8 +43,8 @@ export const MainLayout: React.FC = () => {
       {/* Reusable Clean Glassmorphic Floating Navbar */}
       <Navbar />
 
-      {/* Main Page Content Container */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 relative z-10">
+      {/* Main Page Content Container (with safe bottom padding for mobile navigation) */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-20 lg:pb-12 relative z-10">
         <AnimatePresence mode="wait">
           <Outlet key={location.pathname} />
         </AnimatePresence>
@@ -51,6 +52,9 @@ export const MainLayout: React.FC = () => {
 
       {/* Reusable Clean Footer */}
       <Footer />
+
+      {/* Mobile Native Bottom Navigation Bar */}
+      <MobileBottomNav />
     </div>
   );
 };
