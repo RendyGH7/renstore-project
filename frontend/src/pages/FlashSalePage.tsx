@@ -460,15 +460,15 @@ export const FlashSalePage: React.FC = () => {
                   </div>
 
                   <div>
-                    {/* Product Image Box */}
+                    {/* Product Image Box (Strict 1:1 Square) */}
                     <Link
                       to={`/products/${product.slug}`}
-                      className="block relative aspect-square bg-slate-50 p-6 overflow-hidden"
+                      className="block relative aspect-square w-full bg-slate-100 overflow-hidden"
                     >
                       <img
                         src={product.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600'}
                         alt={product.name}
-                        className="w-full h-full object-contain group-hover:scale-108 transition-transform duration-300 ease-out"
+                        className="w-full h-full aspect-square object-cover object-center group-hover:scale-106 transition-transform duration-500 ease-out"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600';
                         }}

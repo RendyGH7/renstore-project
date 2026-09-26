@@ -721,17 +721,17 @@ export const HomePage: React.FC = () => {
                   className="bg-white rounded-2xl p-4 text-slate-900 border border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div className="space-y-3">
-                    {/* Image Box */}
-                    <Link to={`/products/${prod.slug}`} className="block relative aspect-square bg-slate-50 rounded-xl p-3 overflow-hidden">
+                    {/* Image Box (Strict 1:1) */}
+                    <Link to={`/products/${prod.slug}`} className="block relative aspect-square w-full bg-slate-100 rounded-xl overflow-hidden">
                       <img
                         src={prod.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600'}
                         alt={prod.name}
-                        className="w-full h-full object-contain group-hover:scale-108 transition-transform duration-500"
+                        className="w-full h-full aspect-square object-cover object-center group-hover:scale-106 transition-transform duration-500"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600';
                         }}
                       />
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-lg bg-red-600 text-white font-black text-[10px] shadow-sm">
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-lg bg-red-600 text-white font-black text-[10px] shadow-sm z-10">
                         -{discount}%
                       </span>
                     </Link>
