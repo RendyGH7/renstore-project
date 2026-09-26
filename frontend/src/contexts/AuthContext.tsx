@@ -35,31 +35,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const initAuth = async () => {
       const storedToken = localStorage.getItem('renstore_token');
       if (storedToken) {
-        if (storedToken.includes('admin')) {
-          setUser(MOCK_DEMO_USERS[0]);
-          setIsLoading(false);
-          return;
-        }
-        if (storedToken.includes('customer')) {
-          setUser(MOCK_DEMO_USERS[1]);
-          setIsLoading(false);
-          return;
-        }
         try {
           const res = await api.get<ApiResponse<User>>('/auth/profile');
           if (res.data?.data) {
             setUser(res.data.data);
+            setToken(storedToken);
+          } else {
+            throw new Error('Invalid profile');
+          }
+        } catch (err: any) {
+          // If backend responded with 401 Unauthorized, token is expired/invalid -> clear it
+          if (err.response?.status === 401) {
+            localStorage.removeItem('renstore_token');
+            setToken(null);
+            setUser(null);
+          } else if (storedToken.includes('admin') || storedToken.includes('mock')) {
+            // Only when completely offline / network error on Vercel
+            setUser(MOCK_DEMO_USERS[0]);
+          } else if (storedToken.includes('customer')) {
+            setUser(MOCK_DEMO_USERS[1]);
           } else {
             localStorage.removeItem('renstore_token');
             setToken(null);
             setUser(null);
-          }
-        } catch {
-          // If network error, retain mock user if available
-          if (storedToken.includes('admin')) {
-            setUser(MOCK_DEMO_USERS[0]);
-          } else {
-            setUser(MOCK_DEMO_USERS[1]);
           }
         }
       }
@@ -73,16 +71,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     try {
       const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
-      const authData = response.data.data!;
-      localStorage.setItem('renstore_token', authData.token);
-      setToken(authData.token);
-      setUser(authData.user);
-      return authData;
-    } catch (err: unknown) {
-      // Portfolio Showcase Fallback: Allow login with demo accounts when API is unavailable
+      if (response.data?.data) {
+        const authData = response.data.data;
+        localStorage.setItem('renstore_token', authData.token);
+        setToken(authData.token);
+        setUser(authData.user);
+        return authData;
+      }
+      throw new Error('Invalid login response');
+    } catch (err: any) {
+      // If server returned valid error (e.g. 401 wrong password or 422 validation), throw it
+      if (err.response) {
+        throw err;
+      }
+      // Portfolio Showcase Fallback: ONLY when server is completely offline / network unreachable
       const email = credentials.email.toLowerCase().trim();
-      const isNetworkErr = !axiosIsHttpError(err);
-      if (email.includes('admin') || credentials.password === 'admin123' || isNetworkErr) {
+      if (email.includes('admin') || credentials.password === 'admin123') {
         const demoAdmin = MOCK_DEMO_USERS[0];
         const mockAuth: AuthResponse = { token: 'mock-admin-token-2026', user: demoAdmin };
         localStorage.setItem('renstore_token', mockAuth.token);
@@ -102,10 +106,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(false);
     }
   };
-
-  function axiosIsHttpError(error: unknown): boolean {
-    return !!(error && typeof error === 'object' && 'response' in error && (error as { response?: unknown }).response);
-  }
 
   const register = async (payload: RegisterPayload): Promise<AuthResponse> => {
     setIsLoading(true);
