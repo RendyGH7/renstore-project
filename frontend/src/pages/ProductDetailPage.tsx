@@ -176,7 +176,7 @@ export const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* Price Display */}
-            <div className="p-4 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-between shadow-xs">
+            <div className="flex items-center justify-between py-1">
               <div>
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">{t('price')}</span>
                 <span className="text-2xl sm:text-3xl font-black text-blue-600">
