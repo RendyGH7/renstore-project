@@ -11,8 +11,8 @@ export const MobileBottomNav: React.FC = () => {
   const { language } = useLocale();
   const location = useLocation();
 
-  // Hide bottom nav on specific fullscreen pages if needed
-  if (location.pathname.startsWith('/admin')) {
+  // Hide bottom nav on admin panel or product detail page where dedicated sticky action bar exists
+  if (location.pathname.startsWith('/admin') || (location.pathname.startsWith('/products/') && location.pathname !== '/products')) {
     return null;
   }
 

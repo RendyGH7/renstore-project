@@ -164,16 +164,45 @@ export const CatalogPage: React.FC = () => {
           </div>
         </motion.div>
 
+        {/* Mobile & Tablet Horizontal Scrollable Category Filter Pills */}
+        <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            type="button"
+            onClick={() => handleCategorySelect('')}
+            className={`px-3.5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
+              selectedCategory === ''
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+            }`}
+          >
+            {t('all_categories')}
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => handleCategorySelect(cat.slug)}
+              className={`px-3.5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
+                selectedCategory === cat.slug
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
         {/* Main Grid: Sidebar Filters + Products List */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar Filters */}
+          {/* Desktop Sidebar Filters */}
           <motion.aside
-            className="lg:col-span-1 space-y-6"
+            className="hidden lg:block lg:col-span-1 space-y-6"
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-5 shadow-xs">
+            <div className="p-5 rounded-3xl bg-white border border-slate-200/80 space-y-5 shadow-xs">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <span className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Filter className="w-3.5 h-3.5 text-blue-600" />

@@ -301,7 +301,7 @@ export const ProductDetailPage: React.FC = () => {
       )}
 
       {/* Mobile Sticky Quick Action Bar */}
-      <div className="lg:hidden fixed bottom-[52px] inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 px-4 py-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 safe-bottom">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 safe-bottom">
         <div className="min-w-0">
           <span className="text-[9px] text-slate-400 block uppercase font-bold tracking-wider">{t('price')}</span>
           <span className="text-sm font-black text-blue-600 truncate block">

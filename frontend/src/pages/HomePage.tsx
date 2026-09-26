@@ -708,8 +708,8 @@ export const HomePage: React.FC = () => {
             </Link>
           </div>
 
-          {/* Flash Sale Product Cards Grid */}
-          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {/* Flash Sale Product Cards Grid (2-Col on mobile, 4-Col on desktop) */}
+          <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {featuredProducts.slice(0, 4).map((prod, idx) => {
               const discount = [40, 35, 50, 25][idx % 4];
               const originalPrice = Math.round((prod.price / (1 - discount / 100)) / 10000) * 10000;
@@ -718,11 +718,11 @@ export const HomePage: React.FC = () => {
               return (
                 <div
                   key={prod.id}
-                  className="bg-white rounded-2xl p-4 text-slate-900 border border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-slate-900 border border-white/40 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
                 >
-                  <div className="space-y-3">
+                  <div className="space-y-2.5 sm:space-y-3">
                     {/* Image Box (Strict 1:1) */}
-                    <Link to={`/products/${prod.slug}`} className="block relative aspect-square w-full bg-slate-100 rounded-xl overflow-hidden">
+                    <Link to={`/products/${prod.slug}`} className="block relative aspect-square w-full bg-slate-100 rounded-xl sm:rounded-2xl overflow-hidden">
                       <img
                         src={prod.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600'}
                         alt={prod.name}
@@ -731,7 +731,7 @@ export const HomePage: React.FC = () => {
                           (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600';
                         }}
                       />
-                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-lg bg-red-600 text-white font-black text-[10px] shadow-sm z-10">
+                      <span className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-red-600 text-white font-black text-[9px] sm:text-[10px] shadow-sm z-10">
                         -{discount}%
                       </span>
                     </Link>
@@ -740,15 +740,15 @@ export const HomePage: React.FC = () => {
                     <div>
                       <Link
                         to={`/products/${prod.slug}`}
-                        className="text-xs font-bold text-slate-900 group-hover:text-rose-600 transition-colors line-clamp-1 block"
+                        className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-rose-600 transition-colors line-clamp-1 block"
                       >
                         {prod.name}
                       </Link>
-                      <div className="flex items-baseline gap-1.5 mt-1">
-                        <span className="text-sm font-black text-rose-600">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5 mt-1">
+                        <span className="text-xs sm:text-sm font-black text-rose-600">
                           {formatPrice(prod.price)}
                         </span>
-                        <span className="text-[10px] text-slate-400 line-through">
+                        <span className="text-[9px] sm:text-[10px] text-slate-400 line-through">
                           {formatPrice(originalPrice)}
                         </span>
                       </div>
@@ -756,11 +756,11 @@ export const HomePage: React.FC = () => {
                   </div>
 
                   {/* Sold Stock Progress Bar & Direct Buy Action */}
-                  <div className="mt-3 pt-2 border-t border-slate-100 space-y-2.5">
+                  <div className="mt-2.5 sm:mt-3 pt-2 border-t border-slate-100 space-y-2 sm:space-y-2.5">
                     <div className="space-y-1">
-                      <div className="flex items-center justify-between text-[10px] font-extrabold text-slate-500">
-                        <span className="flex items-center gap-1 text-rose-600">
-                          <Zap className="w-3 h-3 text-rose-500" />
+                      <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-extrabold text-slate-500">
+                        <span className="flex items-center gap-1 text-rose-600 truncate">
+                          <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-rose-500 shrink-0" />
                           {language === 'en' ? `Sold ${soldPercent}%` : `Terjual ${soldPercent}%`}
                         </span>
                       </div>
@@ -775,10 +775,10 @@ export const HomePage: React.FC = () => {
                     <button
                       type="button"
                       onClick={(e) => handleDirectBuy(prod, e)}
-                      className="w-full py-2.5 px-4 rounded-full font-black text-xs flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer bg-gradient-to-r from-red-600 via-rose-600 to-orange-500 hover:from-red-700 hover:via-rose-700 hover:to-orange-600 text-white shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 active:scale-[0.98]"
+                      className="w-full py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl sm:rounded-full font-black text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 transition-all duration-150 cursor-pointer bg-gradient-to-r from-red-600 via-rose-600 to-orange-500 hover:from-red-700 hover:via-rose-700 hover:to-orange-600 text-white shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 active:scale-[0.98]"
                     >
-                      <Zap className="w-4 h-4 text-amber-300 fill-amber-300 shrink-0" />
-                      <span className="truncate font-extrabold">{language === 'en' ? 'Buy Now' : 'Beli Langsung'}</span>
+                      <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-amber-300 fill-amber-300 shrink-0" />
+                      <span className="truncate font-extrabold">{language === 'en' ? 'Buy' : 'Beli'}</span>
                     </button>
                   </div>
                 </div>
