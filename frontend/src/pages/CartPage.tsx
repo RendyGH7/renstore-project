@@ -135,7 +135,7 @@ export const CartPage: React.FC = () => {
                     <img
                       src={product?.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800'}
                       alt={product?.name}
-                      className="w-16 h-16 rounded-xl object-contain bg-white border border-slate-200/60 p-1 mix-blend-multiply"
+                      className="w-16 h-16 aspect-square rounded-xl object-contain bg-slate-50 border border-slate-200/60 p-1 shrink-0"
                     />
                   <div>
                     <h4 className="text-sm font-bold text-slate-900 line-clamp-1">

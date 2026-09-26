@@ -68,10 +68,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
       <div className="absolute top-0 inset-x-6 h-[1.5px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       <div className="absolute -top-16 -left-16 w-36 h-36 bg-blue-400/10 rounded-full blur-2xl pointer-events-none group-hover:scale-150 transition-transform duration-300 ease-out z-0" />
 
-      {/* Product Image Showcase Container */}
+      {/* Product Image Showcase Container (1:1 Ratio) */}
       <Link 
         to={`/products/${product.slug}`} 
-        className="relative aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-6 block border-b border-slate-100 z-10"
+        className="relative aspect-square w-full overflow-hidden bg-slate-50/80 flex items-center justify-center p-5 sm:p-6 block border-b border-slate-100 z-10"
       >
         <img
           src={product.image_url || DEFAULT_PRODUCT_IMG}
@@ -79,7 +79,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
           onError={(e) => {
             (e.target as HTMLImageElement).src = DEFAULT_PRODUCT_IMG;
           }}
-          className="w-full h-full object-contain relative z-10 transition-transform duration-300 ease-out group-hover:scale-108"
+          className="w-full h-full aspect-square object-contain relative z-10 transition-transform duration-300 ease-out group-hover:scale-108"
           loading="lazy"
         />
 

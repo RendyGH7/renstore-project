@@ -146,18 +146,18 @@ export const ProductDetailPage: React.FC = () => {
 
       {/* Main Product Showcase Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12">
-        {/* Product Image Preview */}
-        <div className="relative aspect-square rounded-3xl overflow-hidden bg-white border border-slate-200/80 p-8 flex items-center justify-center shadow-xs">
+        {/* Product Image Preview (1:1 Ratio) */}
+        <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-50/60 border border-slate-200/80 p-6 sm:p-8 flex items-center justify-center shadow-xs">
           <img
             src={product.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800'}
             alt={product.name}
             onError={(e) => {
               (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800';
             }}
-            className="w-full h-full object-contain mix-blend-multiply hover:scale-105 transition-transform duration-300"
+            className="w-full h-full aspect-square object-contain hover:scale-105 transition-transform duration-300"
           />
           {product.category && (
-            <span className="absolute top-4 left-4 bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl border border-slate-200">
+            <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-slate-800 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
               {product.category.name}
             </span>
           )}
