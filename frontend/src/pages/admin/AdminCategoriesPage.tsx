@@ -128,21 +128,27 @@ export const AdminCategoriesPage: React.FC = () => {
       {/* Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-40 bg-white rounded-2xl border border-slate-200/80 animate-pulse shadow-xs" />
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-44 bg-white rounded-2xl border border-slate-200/80 animate-pulse shadow-xs" />
           ))
         ) : (
           categories.map((cat) => (
             <div
               key={cat.id}
-              className="p-5 rounded-2xl bg-white border border-slate-200/80 hover:border-blue-500/40 transition-all flex flex-col justify-between space-y-4 shadow-xs"
+              className="p-5 rounded-2xl bg-white border border-slate-200/80 hover:border-blue-500/40 transition-colors duration-150 flex flex-col justify-between space-y-4 shadow-xs"
             >
               <div className="flex items-start gap-4">
-                <img
-                  src={cat.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=300'}
-                  alt={cat.name}
-                  className="w-14 h-14 rounded-xl object-contain bg-slate-50 border border-slate-200 shrink-0 p-1"
-                />
+                {cat.image ? (
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
+                    className="w-14 h-14 rounded-xl object-contain bg-slate-50 border border-slate-200 shrink-0 p-1"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0 font-black">
+                    <FolderTree className="w-6 h-6" />
+                  </div>
+                )}
                 <div className="space-y-1">
                   <h3 className="text-sm font-bold text-slate-900">{cat.name}</h3>
                   <p className="text-xs text-slate-500 line-clamp-2">{cat.description || 'Tidak ada deskripsi'}</p>

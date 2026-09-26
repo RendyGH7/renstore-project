@@ -53,6 +53,8 @@ export const AdminOrdersPage: React.FC = () => {
     setUpdatingId(orderId);
     try {
       await api.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
+      localStorage.setItem('renstore_last_order_time', String(Date.now()));
+      window.dispatchEvent(new Event('renstore_order_created'));
       await fetchOrders();
       if (selectedOrder && selectedOrder.id === orderId) {
         setSelectedOrder((prev) => (prev ? { ...prev, status: newStatus as any } : null));

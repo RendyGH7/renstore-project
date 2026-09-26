@@ -41,3 +41,32 @@ export interface UpdateProfilePayload {
   password?: string;
   password_confirmation?: string;
 }
+
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface VerifyResetCodePayload {
+  email: string;
+  code: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  code: string;
+  password: string;
+  password_confirmation: string;
+}
+
+export interface AdminUser extends User {
+  orders_count?: number;
+  orders_sum_total_amount?: number | null;
+}
+
+export interface AdminUserStats {
+  total_users: number;
+  total_customers: number;
+  total_admins: number;
+  today_registered: number;
+}
+

@@ -68,19 +68,27 @@ class DashboardController extends Controller
             $slotStart = $today->copy()->setHour($slot['start'])->setMinute(0)->setSecond(0);
             $slotEnd = $today->copy()->setHour($slot['end'])->setMinute(59)->setSecond(59);
 
-            $slotOrders = Order::where('status', '!=', 'cancelled')
-                ->whereBetween('created_at', [$slotStart, $slotEnd]);
+            $sales = (float) Order::where('status', '!=', 'cancelled')
+                ->where(function ($q) {
+                    $q->where('payment_status', 'paid')
+                      ->orWhere('status', 'completed');
+                })
+                ->whereBetween('created_at', [$slotStart, $slotEnd])
+                ->sum('total_amount');
 
-            $sales = (float) $slotOrders->sum('total_amount');
-            $count = $slotOrders->count();
+            $count = Order::where('status', '!=', 'cancelled')
+                ->whereBetween('created_at', [$slotStart, $slotEnd])
+                ->count();
+
+            $completed = Order::where('status', 'completed')
+                ->whereBetween('created_at', [$slotStart, $slotEnd])
+                ->count();
 
             $hourlySales[] = [
                 'period' => $slot['label'],
                 'total_sales' => $sales,
                 'orders_count' => $count,
-                'completed_count' => Order::where('status', 'completed')
-                    ->whereBetween('created_at', [$slotStart, $slotEnd])
-                    ->count(),
+                'completed_count' => $completed,
             ];
         }
 
@@ -93,11 +101,18 @@ class DashboardController extends Controller
 
             $dayLabel = $i === 0 ? 'Hari Ini' : ($i === 1 ? 'Kemarin' : $day->translatedFormat('D, d M'));
 
-            $dayQuery = Order::where('status', '!=', 'cancelled')
-                ->whereBetween('created_at', [$dayStart, $dayEnd]);
+            $sales = (float) Order::where('status', '!=', 'cancelled')
+                ->where(function ($q) {
+                    $q->where('payment_status', 'paid')
+                      ->orWhere('status', 'completed');
+                })
+                ->whereBetween('created_at', [$dayStart, $dayEnd])
+                ->sum('total_amount');
 
-            $sales = (float) $dayQuery->sum('total_amount');
-            $count = $dayQuery->count();
+            $count = Order::where('status', '!=', 'cancelled')
+                ->whereBetween('created_at', [$dayStart, $dayEnd])
+                ->count();
+
             $completed = Order::where('status', 'completed')
                 ->whereBetween('created_at', [$dayStart, $dayEnd])
                 ->count();
@@ -119,12 +134,20 @@ class DashboardController extends Controller
             $month = $date->month;
             $monthLabel = $date->translatedFormat('M Y');
 
-            $monthQuery = Order::where('status', '!=', 'cancelled')
+            $salesSum = (float) Order::where('status', '!=', 'cancelled')
+                ->where(function ($q) {
+                    $q->where('payment_status', 'paid')
+                      ->orWhere('status', 'completed');
+                })
                 ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month);
+                ->whereMonth('created_at', $month)
+                ->sum('total_amount');
 
-            $salesSum = (float) $monthQuery->sum('total_amount');
-            $ordersCount = $monthQuery->count();
+            $ordersCount = Order::where('status', '!=', 'cancelled')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->count();
+
             $completed = Order::where('status', 'completed')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $month)
@@ -145,11 +168,18 @@ class DashboardController extends Controller
         $yearlySales = [];
         $currentYear = Carbon::now()->year;
         for ($y = $currentYear - 2; $y <= $currentYear; $y++) {
-            $yearQuery = Order::where('status', '!=', 'cancelled')
-                ->whereYear('created_at', $y);
+            $salesSum = (float) Order::where('status', '!=', 'cancelled')
+                ->where(function ($q) {
+                    $q->where('payment_status', 'paid')
+                      ->orWhere('status', 'completed');
+                })
+                ->whereYear('created_at', $y)
+                ->sum('total_amount');
 
-            $salesSum = (float) $yearQuery->sum('total_amount');
-            $ordersCount = $yearQuery->count();
+            $ordersCount = Order::where('status', '!=', 'cancelled')
+                ->whereYear('created_at', $y)
+                ->count();
+
             $completed = Order::where('status', 'completed')
                 ->whereYear('created_at', $y)
                 ->count();
@@ -178,11 +208,56 @@ class DashboardController extends Controller
         ->limit(5)
         ->get();
 
-        // 11. Realtime Overview Metrics
-        $todayOrders = Order::whereDate('created_at', Carbon::today())->count();
+        // 11. Category Sales Breakdown & Market Share
+        $categorySales = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->where('orders.status', '!=', 'cancelled')
+            ->select(
+                'categories.id',
+                'categories.name as category_name',
+                'categories.slug as category_slug',
+                DB::raw('SUM(order_items.quantity) as items_sold'),
+                DB::raw('SUM(order_items.subtotal) as total_revenue')
+            )
+            ->groupBy('categories.id', 'categories.name', 'categories.slug')
+            ->orderByDesc('total_revenue')
+            ->limit(6)
+            ->get();
+
+        // 12. Promo Voucher Usage & Performance
+        $promoStats = Order::whereNotNull('promo_code')
+            ->where('promo_code', '!=', '')
+            ->where('status', '!=', 'cancelled')
+            ->select(
+                'promo_code',
+                DB::raw('COUNT(*) as times_used'),
+                DB::raw('SUM(discount_amount) as total_discount_given'),
+                DB::raw('SUM(total_amount) as total_revenue_generated')
+            )
+            ->groupBy('promo_code')
+            ->orderByDesc('times_used')
+            ->limit(5)
+            ->get();
+
+        $totalDiscountGiven = (float) Order::where('status', '!=', 'cancelled')->sum('discount_amount');
+        $totalPromoOrders = Order::whereNotNull('promo_code')->where('promo_code', '!=', '')->where('status', '!=', 'cancelled')->count();
+
+        // 13. Realtime Overview Metrics
+        $todayOrders = Order::where('status', '!=', 'cancelled')
+            ->whereDate('created_at', Carbon::today())
+            ->count();
         $todayRevenue = (float) Order::whereDate('created_at', Carbon::today())
             ->where('status', '!=', 'cancelled')
+            ->where(function ($q) {
+                $q->where('payment_status', 'paid')
+                  ->orWhere('status', 'completed');
+            })
             ->sum('total_amount');
+        $todayNewCustomers = User::where('role', 'customer')
+            ->whereDate('created_at', Carbon::today())
+            ->count();
 
         return response()->json([
             'status' => true,
@@ -201,6 +276,9 @@ class DashboardController extends Controller
                     'total_customers' => $totalCustomers,
                     'today_revenue' => $todayRevenue,
                     'today_orders' => $todayOrders,
+                    'today_new_customers' => $todayNewCustomers,
+                    'total_discount_given' => $totalDiscountGiven,
+                    'total_promo_orders' => $totalPromoOrders,
                 ],
                 'recent_orders' => $recentOrders,
                 'low_stock_products' => $lowStockProducts,
@@ -209,6 +287,8 @@ class DashboardController extends Controller
                 'monthly_sales' => $monthlySales,
                 'yearly_sales' => $yearlySales,
                 'top_selling_products' => $topSelling,
+                'category_sales' => $categorySales,
+                'promo_stats' => $promoStats,
                 'timestamp' => Carbon::now()->toIso8601String(),
             ],
         ]);

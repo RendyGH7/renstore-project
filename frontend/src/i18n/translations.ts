@@ -11,6 +11,8 @@ export interface Translations {
   logout: string;
   home: string;
   catalog: string;
+  flash_sale: string;
+  blogs: string;
   categories: string;
   all_categories: string;
   search_placeholder: string;
@@ -159,6 +161,8 @@ export const translations: Record<Language, Translations> = {
     logout: 'Keluar',
     home: 'Beranda',
     catalog: 'Katalog Produk',
+    flash_sale: 'Flash Sale',
+    blogs: 'Blog',
     categories: 'Kategori',
     all_categories: 'Semua Kategori',
     search_placeholder: 'Cari gadget, laptop, aksesoris...',
@@ -306,6 +310,8 @@ export const translations: Record<Language, Translations> = {
     logout: 'Log Out',
     home: 'Home',
     catalog: 'Product Catalog',
+    flash_sale: 'Flash Sale',
+    blogs: 'Blogs',
     categories: 'Categories',
     all_categories: 'All Categories',
     search_placeholder: 'Search gadgets, laptops, accessories...',

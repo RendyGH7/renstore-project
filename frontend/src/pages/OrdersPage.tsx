@@ -15,16 +15,16 @@ import {
   QrCode,
   Zap,
   Sparkles,
-  RefreshCw,
-  Home
+  RefreshCw
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import api from '../api/axios';
 import { Order, PaginatedResponse, ApiResponse } from '../types';
-import { motion } from 'framer-motion';
 import AnimatedPage from '../components/AnimatedPage';
+import ShipmentTracker from '../components/ShipmentTracker';
 import { useCart } from '../contexts/CartContext';
 import { useLocale } from '../contexts/LocaleContext';
+import { formatWibDateTime } from '../utils/wibTime';
 
 export const OrdersPage: React.FC = () => {
   const { orderNumber } = useParams<{ orderNumber?: string }>();
@@ -88,6 +88,8 @@ export const OrdersPage: React.FC = () => {
     setIsSimulatingPayment(true);
     try {
       await api.post(`/orders/${singleOrder.order_number}/simulate-paid`);
+      localStorage.setItem('renstore_last_order_time', String(Date.now()));
+      window.dispatchEvent(new Event('renstore_order_created'));
       await fetchOrderData(true);
       await refreshCart();
     } catch {
@@ -297,47 +299,9 @@ export const OrdersPage: React.FC = () => {
           </div>
         )}
 
-        {/* Paid Confirmation Banner & Action Buttons if PAID */}
+        {/* Live J&T Express Logistics Tracker (TikTok Shop & Shopee Style) */}
         {!isUnpaid && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="p-6 rounded-3xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-blue-500/10 border-2 border-emerald-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-emerald-600/30">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base sm:text-lg font-black text-slate-900">{t('payment_success_title')}</h3>
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black tracking-wider uppercase">
-                    {t('status_paid')}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-600 max-w-xl">
-                  {t('payment_success_desc')}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto shrink-0">
-              <Link
-                to="/"
-                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/25 transition-all hover:-translate-y-0.5 active:translate-y-0"
-              >
-                <Home className="w-4 h-4" />
-                {t('back_to_home')}
-              </Link>
-              <Link
-                to="/products"
-                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold transition-all shadow-xs"
-              >
-                <ShoppingBag className="w-4 h-4 text-slate-500" />
-                {language === 'en' ? 'Shop More' : 'Belanja Lagi'}
-              </Link>
-            </div>
-          </motion.div>
+          <ShipmentTracker order={singleOrder} />
         )}
 
         {/* Order Info Cards */}
@@ -413,32 +377,6 @@ export const OrdersPage: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {/* Bottom Actions when Paid */}
-        {!isUnpaid && (
-          <div className="p-6 rounded-3xl bg-white border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
-            <div className="text-center sm:text-left">
-              <h4 className="text-sm font-bold text-slate-900">{language === 'en' ? 'Want to keep shopping?' : 'Ingin melanjutkan eksplorasi produk?'}</h4>
-              <p className="text-xs text-slate-500 mt-0.5">{language === 'en' ? 'Discover our full collection of premium tech and gadgets.' : 'Jelajahi berbagai pilihan produk gadget dan teknologi terbaik kami.'}</p>
-            </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <Link
-                to="/"
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all"
-              >
-                <Home className="w-4 h-4" />
-                {t('back_to_home')}
-              </Link>
-              <Link
-                to="/orders"
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all"
-              >
-                <Package className="w-4 h-4 text-slate-500" />
-                {language === 'en' ? 'All Orders' : 'Semua Pesanan'}
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
       </AnimatedPage>
     );
@@ -478,41 +416,68 @@ export const OrdersPage: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((ord) => (
-            <Link
-              key={ord.id}
-              to={`/orders/${ord.order_number}`}
-              className="block p-5 rounded-2xl bg-white border border-slate-200/80 hover:border-blue-500/40 transition-all duration-200 hover:shadow-sm"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-bold text-slate-900 font-mono">{ord.order_number}</span>
-                    {getStatusBadge(ord.status)}
+          {orders.map((ord) => {
+            const jntResi = `JX${ord.order_number.replace(/[^0-9]/g, '').padStart(10, '829104') || '8492019482'}ID`;
+
+            return (
+              <Link
+                key={ord.id}
+                to={`/orders/${ord.order_number}`}
+                className="block p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/80 hover:border-red-400/60 transition-all duration-200 hover:shadow-md space-y-4"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-bold text-slate-900 font-mono">{ord.order_number}</span>
+                      {getStatusBadge(ord.status)}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1 font-medium">
+                      {formatWibDateTime(ord.created_at, { language: language as 'id' | 'en' })}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {new Date(ord.created_at).toLocaleString(language === 'en' ? 'en-US' : 'id-ID', {
-                      dateStyle: 'medium',
-                      timeStyle: 'short',
-                    })}
-                  </p>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                    <div className="text-right">
+                      <span className="text-[10px] text-slate-400 block uppercase font-semibold">{t('total')}</span>
+                      <span className="text-sm sm:text-base font-black text-blue-600">
+                        {formatPrice(ord.total_amount)}
+                      </span>
+                    </div>
+
+                    <div className="p-2 rounded-xl bg-slate-100 text-slate-600">
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block uppercase font-semibold">{t('total')}</span>
-                    <span className="text-sm sm:text-base font-black text-blue-600">
-                      {formatPrice(ord.total_amount)}
+                {/* J&T Express Live Shipping Bar */}
+                {ord.payment_status === 'paid' && (
+                  <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-red-50/30 p-3 rounded-2xl border border-red-100/60">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-red-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">
+                        J&amp;T
+                      </div>
+                      <div className="truncate">
+                        <span className="text-[11px] font-bold text-slate-900 truncate block">
+                          {ord.status === 'completed'
+                            ? language === 'en' ? 'Package Delivered' : 'Paket Telah Sampai di Tujuan'
+                            : language === 'en' ? 'In Transit with J&T Express' : 'Sedang Dikirim oleh J&T Express'}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-500">
+                          Resi: {jntResi}
+                        </span>
+                      </div>
+                    </div>
+
+                    <span className="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1 shrink-0">
+                      {language === 'en' ? 'Track Package' : 'Lacak Perjalanan Paket'}
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
-
-                  <div className="p-2 rounded-xl bg-slate-100 text-slate-600">
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+                )}
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

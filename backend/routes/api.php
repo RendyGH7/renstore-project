@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
@@ -28,7 +29,13 @@ Route::post('/orders/{order_number}/simulate-paid', [WebhookController::class, '
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/verify-reset-code', [AuthController::class, 'verifyResetCode']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
+
+// Newsletter & Exclusive Voucher Claim
+Route::post('/newsletter/claim-voucher', [AuthController::class, 'claimVoucher']);
 
 // Categories (Public)
 Route::prefix('categories')->group(function () {
@@ -113,6 +120,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('orders')->group(function () {
             Route::get('/', [OrderController::class, 'adminIndex']);
             Route::patch('/{id}/status', [OrderController::class, 'updateStatus']);
+        });
+
+        // Admin User & Account Management
+        Route::prefix('users')->group(function () {
+            Route::get('/', [AdminUserController::class, 'index']);
+            Route::post('/{id}/reset-password', [AdminUserController::class, 'resetPassword']);
+            Route::patch('/{id}/role', [AdminUserController::class, 'updateRole']);
+            Route::delete('/{id}', [AdminUserController::class, 'destroy']);
         });
 
         // Admin Analytics & Dashboard

@@ -12,6 +12,21 @@ export interface SalesPeriodData {
   completed_count?: number;
 }
 
+export interface CategorySalesData {
+  id: number;
+  category_name: string;
+  category_slug: string;
+  items_sold: number;
+  total_revenue: number;
+}
+
+export interface PromoStatData {
+  promo_code: string;
+  times_used: number;
+  total_discount_given: number;
+  total_revenue_generated: number;
+}
+
 export interface DashboardMetrics {
   total_revenue: number;
   total_orders: number;
@@ -25,6 +40,9 @@ export interface DashboardMetrics {
   total_customers: number;
   today_revenue?: number;
   today_orders?: number;
+  today_new_customers?: number;
+  total_discount_given?: number;
+  total_promo_orders?: number;
 }
 
 export interface MonthlySales extends SalesPeriodData {}
@@ -45,5 +63,7 @@ export interface DashboardStatsResponse {
   monthly_sales: SalesPeriodData[];
   yearly_sales?: SalesPeriodData[];
   top_selling_products: TopSellingProduct[];
+  category_sales?: CategorySalesData[];
+  promo_stats?: PromoStatData[];
   timestamp?: string;
 }

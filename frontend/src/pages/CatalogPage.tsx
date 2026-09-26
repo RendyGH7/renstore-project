@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  Search,
   SlidersHorizontal,
   Package,
   RotateCcw,
@@ -107,18 +106,6 @@ export const CatalogPage: React.FC = () => {
     setSearchParams(newParams);
   };
 
-  const handleSearchChange = (val: string) => {
-    setSearchQuery(val);
-    setCurrentPage(1);
-    const newParams = new URLSearchParams(searchParams);
-    if (val.trim()) {
-      newParams.set('search', val.trim());
-    } else {
-      newParams.delete('search');
-    }
-    setSearchParams(newParams);
-  };
-
   const handleResetFilters = () => {
     setSelectedCategory('');
     setSearchQuery('');
@@ -143,19 +130,14 @@ export const CatalogPage: React.FC = () => {
                 <Sparkles className="w-6 h-6 text-blue-600" />
                 {t('catalog')}
               </h1>
-
-            </div>
-
-            {/* Search Input */}
-            <div className="relative w-full sm:w-80">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                placeholder={t('search_placeholder')}
-                className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 transition-all shadow-xs"
-              />
+              {searchQuery && (
+                <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1.5">
+                  <span>{language === 'en' ? 'Showing search results for' : 'Menampilkan hasil pencarian untuk'}:</span>
+                  <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-200">
+                    "{searchQuery}"
+                  </span>
+                </p>
+              )}
             </div>
           </div>
         </motion.div>
@@ -276,9 +258,12 @@ export const CatalogPage: React.FC = () => {
             {paginationMeta && paginationMeta.last_page > 1 && (
               <div className="flex items-center justify-center gap-2 pt-6 border-t border-slate-200/80">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  onClick={() => {
+                    setCurrentPage((p) => Math.max(1, p - 1));
+                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                  }}
                   disabled={currentPage <= 1}
-                  className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:cursor-not-allowed shadow-xs"
+                  className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:cursor-not-allowed shadow-xs cursor-pointer"
                   aria-label="Previous Page"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -289,8 +274,11 @@ export const CatalogPage: React.FC = () => {
                   return (
                     <button
                       key={pageNum}
-                      onClick={() => setCurrentPage(pageNum)}
-                      className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${currentPage === pageNum
+                      onClick={() => {
+                        setCurrentPage(pageNum);
+                        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                      }}
+                      className={`w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer ${currentPage === pageNum
                           ? 'bg-blue-600 text-white shadow-xs'
                           : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                         }`}
@@ -301,9 +289,12 @@ export const CatalogPage: React.FC = () => {
                 })}
 
                 <button
-                  onClick={() => setCurrentPage((p) => Math.min(paginationMeta.last_page, p + 1))}
+                  onClick={() => {
+                    setCurrentPage((p) => Math.min(paginationMeta.last_page, p + 1));
+                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                  }}
                   disabled={currentPage >= paginationMeta.last_page}
-                  className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:cursor-not-allowed shadow-xs"
+                  className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:cursor-not-allowed shadow-xs cursor-pointer"
                   aria-label="Next Page"
                 >
                   <ChevronRight className="w-4 h-4" />

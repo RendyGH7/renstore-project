@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { 
-  ShieldCheck, 
-  MapPin, 
-  Phone, 
-  FileText, 
-  ArrowRight, 
-  AlertCircle, 
-  ShoppingBag, 
+import {
+  ShieldCheck,
+  MapPin,
+  Phone,
+  FileText,
+  ArrowRight,
+  AlertCircle,
+  ShoppingBag,
   CheckCircle2,
   Lock,
   QrCode,
@@ -101,7 +101,7 @@ export const CheckoutPage: React.FC = () => {
             setCreatedOrder(res.data.data);
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [queryOrderNumber, createdOrder]);
 
@@ -113,7 +113,7 @@ export const CheckoutPage: React.FC = () => {
   }, [refreshCart, createdOrder, queryOrderNumber, isDirect]);
 
   // Calculate current subtotal and item count
-  const currentSubtotal = isDirect 
+  const currentSubtotal = isDirect
     ? (directProduct ? Number(directProduct.price) * directQuantity : 0)
     : totalAmount;
 
@@ -186,6 +186,8 @@ export const CheckoutPage: React.FC = () => {
 
       if (response.data?.data) {
         setCreatedOrder(response.data.data);
+        localStorage.setItem('renstore_last_order_time', String(Date.now()));
+        window.dispatchEvent(new Event('renstore_order_created'));
         if (!isDirect) {
           await refreshCart();
         }
@@ -254,6 +256,8 @@ export const CheckoutPage: React.FC = () => {
       const res = await api.post<ApiResponse<Order>>(`/orders/${createdOrder.order_number}/simulate-paid`);
       if (res.data?.data) {
         setCreatedOrder(res.data.data);
+        localStorage.setItem('renstore_last_order_time', String(Date.now()));
+        window.dispatchEvent(new Event('renstore_order_created'));
         if (!isDirect) {
           await refreshCart();
         }
@@ -477,11 +481,7 @@ export const CheckoutPage: React.FC = () => {
             </div>
           </div>
 
-          <p className="text-[11px] text-slate-400">
-            {language === 'en'
-              ? 'Once paid or simulated, your order status will immediately update to PAID.'
-              : 'Setelah pembayaran selesai dipindai atau disimulasikan, status order akan otomatis berubah menjadi LUNAS (PAID).'}
-          </p>
+
         </div>
       </div>
     );
@@ -523,11 +523,7 @@ export const CheckoutPage: React.FC = () => {
             <Lock className="w-6 h-6 text-blue-600" />
             {t('checkout_title')}
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            {language === 'en'
-              ? 'Complete your shipping information to finish your order via Dynamic QRIS'
-              : 'Lengkapi data pengiriman untuk menyelesaikan pesanan dengan pembayaran Dynamic QRIS'}
-          </p>
+
         </div>
 
         {isDirect && (

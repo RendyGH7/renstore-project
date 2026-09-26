@@ -187,7 +187,7 @@ export const ProfilePage: React.FC = () => {
             {/* Avatar Photo Card */}
             <div className="p-6 rounded-3xl bg-white border border-slate-200/80 text-center space-y-5 shadow-xs">
               <div className="relative inline-block mx-auto">
-                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl shadow-slate-900/10 bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-4xl font-black mx-auto relative group">
+                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl shadow-slate-900/10 bg-blue-600 flex items-center justify-center text-white text-4xl font-black mx-auto relative group">
                   {avatarPreview ? (
                     <img 
                       src={avatarPreview} 

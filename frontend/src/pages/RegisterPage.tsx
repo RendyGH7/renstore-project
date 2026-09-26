@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Lock, Mail, User, AlertCircle, ArrowRight, Phone, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { ShoppingBag, Lock, Mail, User, AlertCircle, ArrowRight, Phone, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
 export const RegisterPage: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -14,11 +15,18 @@ export const RegisterPage: React.FC = () => {
     password: '',
     password_confirmation: '',
     phone: '',
-    address: '',
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const prefillEmail = (location.state as { email?: string })?.email;
+    if (prefillEmail) {
+      setFormData(prev => ({ ...prev, email: prefillEmail }));
+    }
+  }, [location.state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,6 +35,7 @@ export const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setErrorCode(null);
 
     if (formData.password !== formData.password_confirmation) {
       setError('Konfirmasi password tidak cocok.');
@@ -38,7 +47,10 @@ export const RegisterPage: React.FC = () => {
       await register(formData);
       navigate('/', { replace: true });
     } catch (err: any) {
-      const msg = err.response?.data?.message || 'Registrasi gagal. Silakan periksa format data Anda.';
+      const resp = err.response?.data;
+      const code = resp?.code || (resp?.message?.toLowerCase().includes('already') || resp?.message?.toLowerCase().includes('sudah') ? 'EMAIL_ALREADY_EXISTS' : null);
+      setErrorCode(code);
+      const msg = resp?.message || 'Registrasi gagal. Silakan periksa format data Anda.';
       setError(msg);
     } finally {
       setIsLoading(false);
@@ -67,14 +79,30 @@ export const RegisterPage: React.FC = () => {
             <span className="text-xl font-extrabold tracking-tight text-slate-900">RENSTORE</span>
           </Link>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Buat Akun Customer Baru</h1>
-          <p className="text-xs text-slate-500">Dapatkan pengalaman belanja kebutuhan lifestyle eksklusif</p>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
+          <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs space-y-2.5">
+            <div className="flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
+              <div className="flex-1 font-semibold leading-relaxed">{error}</div>
+            </div>
+
+            {/* Quick Action when Email is Already Registered */}
+            {errorCode === 'EMAIL_ALREADY_EXISTS' && (
+              <div className="pt-2 border-t border-red-200/70 flex items-center justify-between gap-2">
+                <span className="text-[11px] text-red-600 font-medium">Sudah punya akun ini?</span>
+                <Link
+                  to="/login"
+                  state={{ email: formData.email }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] shadow-2xs transition-colors shrink-0"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Masuk Sekarang
+                </Link>
+              </div>
+            )}
           </div>
         )}
 
@@ -162,21 +190,6 @@ export const RegisterPage: React.FC = () => {
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/15 transition-all"
                 />
               </div>
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700">Alamat Pengiriman</label>
-            <div className="relative">
-              <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-              <textarea
-                name="address"
-                rows={2}
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="Alamat lengkap tujuan pengiriman..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/15 transition-all resize-none"
-              />
             </div>
           </div>
 

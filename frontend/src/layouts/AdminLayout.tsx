@@ -5,17 +5,16 @@ import {
   Package, 
   FolderTree, 
   ShoppingCart, 
+  Users,
   ArrowLeft, 
   LogOut, 
-  ShieldCheck,
-  User as UserIcon,
-  Store,
-  Menu,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  PanelLeftClose,
-  PanelLeftOpen
+  ShieldCheck, 
+  User as UserIcon, 
+  Store, 
+  Menu, 
+  X, 
+  PanelLeftClose, 
+  PanelLeftOpen 
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -45,6 +44,7 @@ export const AdminLayout: React.FC = () => {
     { to: '/admin/products', label: 'Products', icon: Package },
     { to: '/admin/categories', label: 'Categories', icon: FolderTree },
     { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
+    { to: '/admin/users', label: 'Users & Accounts', icon: Users },
   ];
 
   return (
@@ -83,35 +83,7 @@ export const AdminLayout: React.FC = () => {
                 </div>
               )}
             </div>
-
-            {/* Collapse toggle button on sidebar header */}
-            {!isCollapsed && (
-              <button
-                type="button"
-                onClick={() => setIsCollapsed(true)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0"
-                title="Ciutkan Sidebar (Collapse)"
-                aria-label="Collapse Sidebar"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-            )}
           </div>
-
-          {/* If Collapsed, Quick Expand Toggle at top */}
-          {isCollapsed && (
-            <div className="pt-3 px-3 flex justify-center animate-in fade-in duration-200">
-              <button
-                type="button"
-                onClick={() => setIsCollapsed(false)}
-                className="p-2 rounded-xl bg-slate-800/80 hover:bg-blue-600 text-slate-300 hover:text-white transition-all shadow-xs hover:scale-105 active:scale-95"
-                title="Buka Sidebar (Expand)"
-                aria-label="Expand Sidebar"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
 
           {/* Navigation Sections */}
           <div className="p-3 space-y-6 flex-1 overflow-hidden">
@@ -385,7 +357,7 @@ export const AdminLayout: React.FC = () => {
         )}
 
         {/* Content Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           <Outlet />
         </main>
       </div>

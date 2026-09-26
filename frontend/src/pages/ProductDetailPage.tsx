@@ -6,9 +6,6 @@ import {
   ArrowLeft, 
   ArrowRight,
   Package, 
-  ShieldCheck, 
-  Truck, 
-  RefreshCw, 
   Plus, 
   Minus,
   Sparkles,
@@ -268,22 +265,6 @@ export const ProductDetailPage: React.FC = () => {
                 <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
                 {t('buy_now')}
               </button>
-            </div>
-
-            {/* Feature Assurances */}
-            <div className="grid grid-cols-3 gap-3 pt-3">
-              <div className="p-3 rounded-xl bg-white border border-slate-200/80 text-center space-y-1 shadow-xs">
-                <Truck className="w-4 h-4 text-blue-600 mx-auto" />
-                <span className="text-[10px] text-slate-600 block font-semibold">{t('feature_shipping_title')}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-white border border-slate-200/80 text-center space-y-1 shadow-xs">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 mx-auto" />
-                <span className="text-[10px] text-slate-600 block font-semibold">{t('feature_warranty_title')}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-white border border-slate-200/80 text-center space-y-1 shadow-xs">
-                <RefreshCw className="w-4 h-4 text-purple-600 mx-auto" />
-                <span className="text-[10px] text-slate-600 block font-semibold">2-Year Warranty</span>
-              </div>
             </div>
           </div>
         </div>
